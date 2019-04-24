@@ -1,6 +1,8 @@
 # UpCloud Rancher UI Driver
+
+[![CircleCI](https://circleci.com/gh/montel-ig/ui-driver-upcloud/tree/master.svg?style=svg)](https://circleci.com/gh/montel-ig/ui-driver-upcloud/tree/master)
+
 Rancher UI driver for [UpCloud](https://upcloud.com)
-[![CircleCI](https://circleci.com/gh/montel-ig/ui-driver-upcloud/tree/develop.svg?style=svg)](https://circleci.com/gh/montel-ig/ui-driver-upcloud/tree/develop)
 
 ## Using
 This driver is meant to be used with the [docker-machine-driver-upcloud](https://github.com/montel-ig/docker-machine-driver-upcloud/).
