@@ -1,38 +1,134 @@
 <section class="horizontal-form">
-  {{#accordion-list showExpandAll=false as | al expandFn |}}
+  {{#unless isAuthenticated }}
+    {{#accordion-list showExpandAll=false as | al expandFn |}}
     {{!-- This line shows the driver title which you don't have to change it --}}
-    <div class="over-hr mb-20"><span>{{driverOptionsTitle}}</span></div>
-
-    {{!-- An example input option --}}
-    <div class="row box mt-20">
-      <h4>Instance Options</h4>
+      <div class="over-hr mb-20"><span>{{driverOptionsTitle}}</span></div>
       <div class="row">
-        <div class="col span-2 col-inline">
-          <label>CPUs</label>
+        <div class="col span-6">
+          <label>User</label>
+          {{input value=config.user classNames="form-control"}}
         </div>
-
-        <div class="col span-1">
-          {{config.cpuCount}}
-        </div>
-        <div class="col span-3">
-          {{input-slider value=config.cpuCount valueMin=1 valueMax=32}}
-        </div>
-
-        <div class="col span-2 col-inline">
-          <label>Memory Size</label>
-        </div>
-        <div class="col span-4">
-          <div class="input-group">
-            {{input-integer min=1 value=config.memorySize classNames="form-control"}}
-            <div class="input-group-addon bg-default">MB</div>
-          </div>
+        <div class="col span-6">
+          <label>Password</label>
+          {{input type="password" value=config.passwd classNames="form-control"}}
         </div>
       </div>
-    </div>
+      <button {{action "authenticate"}} class="btn bg-primary">Authenticate</button>
+    {{/accordion-list}}
 
+  {{else}}
+    <form>
+      {{#accordion-list class="mt-20" showExpandAll=false as | al expandFn |}}
+        {{#accordion-list-item
+          title="Instance configuration"
+          detail="Set up the basic configuration for the instance"
+          expand=(action expandFn)
+          expandOnInit=true
+        }}
+          <div class="row">
+            <label>
+              Use a custom configuration
+              <input type="checkbox"
+                     checked={{model.upcloudConfig.useCustomConfig}}
+                     value={{useCustomConfig}}
+                     onchange={{action (mut model.upcloudConfig.useCustomConfig) value='target.checked'}}>
+            </label>
+            <div class="mt-15">
+              {{#unless model.upcloudConfig.useCustomConfig}}
+                <label>Predefined plans</label>
+                <div class="row">
+                  <select class="col span-6 form-control" onchange={{action (mut model.upcloudConfig.plan)
+                                                                            value="target.value" }}>
+                    {{#each plans as |plan|}}
+                      <option value={{plan.value}} selected={{eq model.upcloudConfig.plan plan.value}}>{{plan.name}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+              {{else}}
+                <div class="row">
+                  <div class="row">
+                    <label class="col span-2">CPUs: {{config.coreNumber}}</label>
+                  </div>
+                  <div class="row mt-5">
+                    <div class="col span-2 input-group">
+                      {{input-slider value=config.coreNumber valueMin=1 valueMax=32}}
+                    </div>
+                  </div>
+                  <div class="row mt-5">
+                    <div class="row">
+                      <label class="col span-2">Memory Amount</label>
+                    </div>
+                    <div class="col span-2 input-group">
+                      {{input-integer min=1 max=128 value=config.memoryAmount classNames="form-control"}}
+                      <div class="input-group-addon bg-default">GB</div>
+                    </div>
+                  </div>
+                  <div class="row mt-15">
+                    <label class="col span-2">Storage Size</label>
+                  </div>
+                  <div class="row mt-5">
+                    <div class="col span-3">
+                      {{input-slider value=config.storageSize valueMin=10 valueMax=2048}}
+                    </div>
+                    <div class="col span-2 input-group">
+                      {{input-integer min=10 max=2048 value=config.storageSize classNames="form-control"}}
+                      <div class="input-group-addon bg-default">GB</div>
+                    </div>
+                  </div>
+                </div>
+              {{/unless}}
+            </div>
+          </div>
+        {{/accordion-list-item}}
+        {{#accordion-list-item
+          title="Zone selection"
+          detail="Select the zone for the instance to run in"
+          expand=(action expandFn)
+          expandOnInit=true
+        }}
+          <div class="row">
+            <h4>Zones</h4>
+            <div class="row">
+              {{#each zones as |zone| }}
+                <label class="zoneCard col span-3">
+                  <input type="radio" name="zones" value={{zone.id}} checked={{eq model.upcloudConfig.zone zone.id}}>
+                  <img src="https://hub.upcloud.com/static/flags/{{zone.flag}}.png"
+                       srcset="https://hub.upcloud.com/static/flags/{{zone.flag}}.png 1x, https://hub.upcloud.com/static/flags/{{zone.flag}}-2x.png 2x"
+                       alt="Flag of {{zone.flag}}"
+                       style="max-width: 20px;"/>
+                  <div class="labels">
+                    <strong style="text-transform: uppercase;">{{zone.id}}</strong>
+                    {{zone.name}}
+                  </div>
+                </label>
+              {{/each}}
+            </div>
+          </div>
+        {{/accordion-list-item}}
+        {{#accordion-list-item
+          title="Advanced configurations"
+          detail="Advanced setup for networking"
+          expand=(action expandFn)
+          expandOnInit=false
+        }}
+          <div clas="row">
+            <label>
+              <input type="checkbox"
+                     checked={{model.upcloudConfig.usePrivateNetworkOnly}}
+                     value={{usePrivateNetworkOnly}}
+                     onchange={{action (mut model.upcloudConfig.usePrivateNetworkOnly) value='target.checked'}}>
+              Use private network only.<br>
+            </label>
+            <p class="help-block">
+              UpCloud will assign a public IP by default unless told otherwise.<br>
+              (Recommended for nodes that should not be exposed to the internet).
+            </p>
+          </div>
+        {{/accordion-list-item}}
+      {{/accordion-list}}
+    </form>
     {{!-- This following contains the Name, Labels and Engine Options fields --}}
     <div class="over-hr"><span>{{templateOptionsTitle}}</span></div>
-
     {{form-name-description
       model=model
       nameRequired=true
@@ -49,8 +145,8 @@
       machine=model
       showEngineUrl=showEngineUrl
     }}
-  {{/accordion-list}}
 
+  {{/unless}}
   {{!-- This component shows errors produced by validate() in the component --}}
   {{top-errors errors=errors}}
 
