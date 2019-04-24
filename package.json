@@ -1,10 +1,10 @@
 {
-  "name": "ui-driver-skel",
+  "name": "ui-driver-upcloud",
   "version": "0.0.2",
-  "description": "Skeleton Rancher UI driver for custom docker-machine drivers",
+  "description": "Rancher UI driver for the UpCloud docker-machine driver",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rancher/ui-driver-skel.git"
+    "url": "git+https://github.com/montel-ig/ui-driver-upcloud.git"
   },
   "author": "Rancher Labs, Inc.",
   "license": "Apache-2.0",
