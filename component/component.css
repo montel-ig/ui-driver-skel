@@ -1,3 +1,17 @@
 .machine-driver.%%DRIVERNAME%% {
-  background-image: url('example.svg');
+  background-image: url('upcloud.svg');
+}
+
+.zoneCard {
+  background: rgb(251, 252, 252);
+  border: 1px solid lightgray;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  padding: 15px;
+}
+
+.zoneCard .labels {
+  display: inline-flex;
+  flex-direction: column;
 }
