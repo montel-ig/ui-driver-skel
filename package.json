@@ -1,6 +1,6 @@
 {
   "name": "ui-driver-upcloud",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Rancher UI driver for the UpCloud docker-machine driver",
   "repository": {
     "type": "git",
