@@ -11,8 +11,9 @@ On your Rancher cluster, go to `https://your-cluster.com/n/drivers/node`, and se
 
 | Driver | Link |
 | ------ | ---- |
-| Download URL | `https://github.com/montel-ig/docker-machine-driver-upcloud/releases/download/1.1.1/docker-machine-driver-upcloud_v1.1.1_linux-amd64.zip` |
-| Custom UI URL | `https://github.com/montel-ig/ui-driver-upcloud/releases/download/1.0.0/component.js` |
+| Download URL | `https://rancher.montel.fi/upcloud/driver/docker-machine-driver-upcloud_v1.1.1_linux-amd64.zip` |
+| Custom UI URL | `https://rancher.montel.fi/upcloud/ui/component.js` |
+| Whitelist Domains | `rancher.montel.fi` |
 
 Press `Create` and wait for the Rancher node to download the `docker-machine` driver. Once that's done, you should see the driver status as `Active`. Then you're good to go.
 
