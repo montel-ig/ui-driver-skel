@@ -83,8 +83,6 @@ export default Ember.Component.extend(NodeDriver, {
         errors.push('Memory Size must be at least 1 GB');
       } else if (memoryAmount > 128) {
         errors.push('CPU count has to be smaller or equal than 128GB');
-      } else {
-        set(this, 'config.memoryAmount', memoryAmount * 1024);
       }
 
       const storageSize = parseInt(get(this, 'config.storageSize'), defaultRadix);
