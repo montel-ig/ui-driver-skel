@@ -12,7 +12,7 @@ On your Rancher cluster, go to `https://your-cluster.com/n/drivers/node`, and se
 
 | Driver | Link |
 | ------ | ---- |
-| Download URL | `https://rancher.montel.fi/upcloud/driver/docker-machine-driver-upcloud_v1.1.1_linux-amd64.zip` |
+| Download URL | `https://rancher.montel.fi/upcloud/driver/docker-machine-driver-upcloud.zip` |
 | Custom UI URL | `https://rancher.montel.fi/upcloud/ui/component.js` |
 | Whitelist Domains | `rancher.montel.fi` |
 
