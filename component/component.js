@@ -12,6 +12,7 @@ const LAYOUT;
 const computed = Ember.computed;
 const get = Ember.get;
 const set = Ember.set;
+const observe = Ember.observer;
 const alias = Ember.computed.alias;
 const service = Ember.inject.service;
 
@@ -34,7 +35,6 @@ export default Ember.Component.extend(NodeDriver, {
     set(this, 'layout', template);
 
     this._super(...arguments);
-
   },
   /*!!!!!!!!!!!DO NOT CHANGE END!!!!!!!!!!!*/
 
@@ -48,9 +48,10 @@ export default Ember.Component.extend(NodeDriver, {
       passwd: '',
       isAuthenticated: false,
       zone: 'de-fra1',
-      coreNumber: 1,
-      memoryAmount: 4,
+      coreNumber: 0,
+      memoryAmount: 0,
       storageSize: 25,
+      useCustomConfig: false,
       usePrivateNetworkOnly: false,
     });
 
@@ -114,6 +115,17 @@ export default Ember.Component.extend(NodeDriver, {
       return true;
     }
   },
+
+  customConfigObserver: observe('config.useCustomConfig', function () {
+    const useCustomConfig = get(this, 'config.useCustomConfig');
+    if (!useCustomConfig) {
+      set(this, 'config.coreNumber', 0);
+      set(this, 'config.memoryAmount', 0);
+    } else {
+      set(this, 'config.coreNumber', 1);
+      set(this, 'config.memoryAmount', 4);
+    }
+  }),
 
   actions: {
     authenticate() {

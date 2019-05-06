@@ -29,18 +29,18 @@
             <label>
               Use a custom configuration
               <input type="checkbox"
-                     checked={{model.upcloudConfig.useCustomConfig}}
-                     value={{useCustomConfig}}
-                     onchange={{action (mut model.upcloudConfig.useCustomConfig) value='target.checked'}}>
+                     checked={{config.coreNumber}}
+                     value={{or config.useCustomConfig config.coreNumber}}
+                     onchange={{action (mut config.useCustomConfig) value='target.checked'}}>
             </label>
             <div class="mt-15">
-              {{#unless model.upcloudConfig.useCustomConfig}}
+              {{#unless config.coreNumber}}
                 <label>Predefined plans</label>
                 <div class="row">
-                  <select class="col span-6 form-control" onchange={{action (mut model.upcloudConfig.plan)
+                  <select class="col span-6 form-control" onchange={{action (mut config.plan)
                                                                             value="target.value" }}>
                     {{#each plans as |plan|}}
-                      <option value={{plan.value}} selected={{eq model.upcloudConfig.plan plan.value}}>{{plan.name}}</option>
+                      <option value={{plan.value}} selected={{eq config.plan plan.value}}>{{plan.name}}</option>
                     {{/each}}
                   </select>
                 </div>
@@ -91,7 +91,7 @@
             <div class="row">
               {{#each zones as |zone| }}
                 <label class="zoneCard col span-3">
-                  <input type="radio" name="zones" value={{zone.id}} checked={{eq model.upcloudConfig.zone zone.id}}>
+                  {{radio-button name="zones" selection=config.zone value=zone.id}}
                   <img src="https://hub.upcloud.com/static/flags/{{zone.flag}}.png"
                        srcset="https://hub.upcloud.com/static/flags/{{zone.flag}}.png 1x, https://hub.upcloud.com/static/flags/{{zone.flag}}-2x.png 2x"
                        alt="Flag of {{zone.flag}}"
