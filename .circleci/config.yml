@@ -47,7 +47,7 @@ jobs:
     steps:
       - attach_workspace:
          # Must be absolute path or relative path from working_directory
-         at: dist
+         at: workspace
       - run:
           name: Get deploy dir
           command: |
@@ -60,7 +60,7 @@ jobs:
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-region: AWS_REGION
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          from: dist
+          from: workspace/dist
           to: "s3://upcloud-rancher-driver/ui/${DEPLOY_DIR}"
 
 workflows:
