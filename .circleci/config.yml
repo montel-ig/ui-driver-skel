@@ -21,8 +21,7 @@ jobs:
       # - image: circleci/mongo:3.4.4
 
     working_directory: ~/ui-driver-upcloud
-    environment:
-      SHORT_GIT_HASH: $(echo $CIRCLE_SHA1 | cut -c -7)
+
     steps:
       - checkout
 
@@ -45,7 +44,7 @@ jobs:
           aws-region: AWS_REGION
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           from: dist
-          to: "s3://upcloud-rancher-driver/${SHORT_GIT_HASH}"
+          to: "s3://upcloud-rancher-driver/${CIRCLE_SHA1:0:7}"
       - save_cache:
           paths:
             - node_modules
