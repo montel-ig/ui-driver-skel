@@ -31,14 +31,23 @@ jobs:
 
       - run: npm install
       - run: npm run build
+
+      - persist_to_workspace:
+          root: .
+          paths: dist
+
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
+
   deploy:
     docker:
       - image: circleci/node:10.13
     steps:
+     - attach_workspace:
+            # Must be absolute path or relative path from working_directory
+            at: dist
       - run:
           name: Get deploy dir
           command: |
