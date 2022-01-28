@@ -6,9 +6,6 @@ version: 2.1
 orbs:
    aws-s3: circleci/aws-s3@3.0
 
-machine:
-
-
 jobs:
   build:
     docker:
@@ -33,9 +30,19 @@ jobs:
             - v1-dependencies-
 
       - run: npm install
-
       - run: npm run build
-
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+  deploy:
+    docker:
+      - image: circleci/node:10.13
+    steps:
+      - run:
+          name: Get deploy dir
+          command: |
+            - echo 'export DEPLOY_DIR=$( if [ "$CIRCLE_TAG" =~ "^v.*" ]; then echo "$CIRCLE_TAG"; else echo "${CIRCLE_SHA1:0:7}; fi )' >> $BASH_ENV
       - aws-s3/sync:
           arguments: |
             --acl public-read \
@@ -44,8 +51,14 @@ jobs:
           aws-region: AWS_REGION
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           from: dist
-          to: "s3://upcloud-rancher-driver/${CIRCLE_SHA1:0:7}"
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          to: "s3://upcloud-rancher-driver/${DEPLOY_DIR}"
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+
