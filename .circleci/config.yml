@@ -42,7 +42,8 @@ jobs:
       - run:
           name: Get deploy dir
           command: |
-            - echo 'export DEPLOY_DIR=$( if [ "$CIRCLE_TAG" =~ "^v.*" ]; then echo "$CIRCLE_TAG"; else echo "${CIRCLE_SHA1:0:7}; fi )' >> $BASH_ENV
+            echo 'export DEPLOY_DIR=$( if [ "$CIRCLE_TAG" =~ "^v.*" ]; then echo "$CIRCLE_TAG"; else echo "${CIRCLE_SHA1:0:7}; fi )' >> $BASH_ENV
+
       - aws-s3/sync:
           arguments: |
             --acl public-read \
