@@ -51,7 +51,7 @@ jobs:
       - run:
           name: Get deploy dir
           command: |
-            echo 'export DEPLOY_DIR=$( if [ "$CIRCLE_TAG" =~ "^v.*" ]; then echo "$CIRCLE_TAG"; else echo "${CIRCLE_SHA1:0:7}; fi )' >> $BASH_ENV
+            echo 'export DEPLOY_DIR=$( if [[ "$CIRCLE_TAG" =~ "^v.*" ]]; then echo "$CIRCLE_TAG"; else echo "${CIRCLE_SHA1:0:7}"; fi )' >> $BASH_ENV
 
       - aws-s3/sync:
           arguments: |
@@ -61,7 +61,7 @@ jobs:
           aws-region: AWS_REGION
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           from: dist
-          to: "s3://upcloud-rancher-driver/${DEPLOY_DIR}"
+          to: "s3://upcloud-rancher-driver/ui/${DEPLOY_DIR}"
 
 workflows:
   version: 2
