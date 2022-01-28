@@ -72,3 +72,16 @@ workflows:
           requires:
             - build
 
+  tagged-build-deploy:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /^v.*/
+      - deploy:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /^v.*/
+
