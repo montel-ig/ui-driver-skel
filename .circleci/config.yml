@@ -7,8 +7,7 @@ orbs:
    aws-s3: circleci/aws-s3@3.0
 
 machine:
-  environment:
-    SHORT_GIT_HASH: $(echo $CIRCLE_SHA1 | cut -c -7)
+
 
 jobs:
   build:
@@ -22,7 +21,8 @@ jobs:
       # - image: circleci/mongo:3.4.4
 
     working_directory: ~/ui-driver-upcloud
-
+    environment:
+      SHORT_GIT_HASH: $(echo $CIRCLE_SHA1 | cut -c -7)
     steps:
       - checkout
 
@@ -43,7 +43,7 @@ jobs:
             --cache-control "max-age=86400"
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-region: AWS_REGION
-          aws-secret-access-key: AWS_SECRET_KEY
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
           from: dist
           to: "s3://upcloud-rancher-driver/${SHORT_GIT_HASH}"
       - save_cache:
