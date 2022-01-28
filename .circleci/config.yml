@@ -45,9 +45,9 @@ jobs:
     docker:
       - image: circleci/node:10.13
     steps:
-     - attach_workspace:
-            # Must be absolute path or relative path from working_directory
-            at: dist
+      - attach_workspace:
+         # Must be absolute path or relative path from working_directory
+         at: dist
       - run:
           name: Get deploy dir
           command: |
