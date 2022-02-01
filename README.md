@@ -10,11 +10,11 @@ This driver is meant to be used with the [docker-machine-driver-upcloud](https:/
 
 On your Rancher cluster, go to `https://your-cluster.com/n/drivers/node`, and select `Add Node Driver`.
 
-| Driver | Link |
-| ------ | ---- |
-| Download URL | `https://rancher.montel.fi/upcloud/driver/docker-machine-driver-upcloud.zip` |
-| Custom UI URL | `https://rancher.montel.fi/upcloud/ui/component.js` |
-| Whitelist Domains | `rancher.montel.fi` |
+| Driver | Link                                                                    |
+| ------ |-------------------------------------------------------------------------|
+| Download URL | `https://upcloud-rancher-driver.s3.eu-north-1.amazonaws.com/machine/v1.2.1/component.js` |
+| Custom UI URL | `https://upcloud-rancher-driver.s3.eu-north-1.amazonaws.com/ui/v1.1.0/component.js` |
+| Whitelist Domains | `upcloud-rancher-driver.s3.eu-north-1.amazonaws.com`                                                                      |
 
 Press `Create` and wait for the Rancher node to download the `docker-machine` driver. Once that's done, you should see the driver status as `Active`. Then you're good to go.
 
