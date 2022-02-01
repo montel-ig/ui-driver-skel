@@ -12,9 +12,9 @@ On your Rancher cluster, go to `https://your-cluster.com/n/drivers/node`, and se
 
 | Driver | Link                                                                    |
 | ------ |-------------------------------------------------------------------------|
-| Download URL | `https://upcloud-rancher-driver.s3.eu-north-1.amazonaws.com/machine/v1.2.1/component.js` |
+| Download URL | `https://upcloud-rancher-driver.s3.eu-north-1.amazonaws.com/machine/v1.2.1/docker-machine-driver-upcloud` |
 | Custom UI URL | `https://upcloud-rancher-driver.s3.eu-north-1.amazonaws.com/ui/v1.1.0/component.js` |
-| Whitelist Domains | `upcloud-rancher-driver.s3.eu-north-1.amazonaws.com`                                                                      |
+| Whitelist Domains | `upcloud-rancher-driver.s3.eu-north-1.amazonaws.com`                                                                    |
 
 Press `Create` and wait for the Rancher node to download the `docker-machine` driver. Once that's done, you should see the driver status as `Active`. Then you're good to go.
 
