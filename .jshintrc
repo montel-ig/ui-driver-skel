@@ -43,5 +43,6 @@
   "white": false,
   "eqnull": true,
   "esnext": true,
+  "esversion": 9,
   "unused": true
 }

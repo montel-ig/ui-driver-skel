@@ -12,6 +12,7 @@ const LAYOUT;
 const computed = Ember.computed;
 const get = Ember.get;
 const set = Ember.set;
+const observe = Ember.observer;
 const alias = Ember.computed.alias;
 const service = Ember.inject.service;
 
@@ -34,7 +35,6 @@ export default Ember.Component.extend(NodeDriver, {
     set(this, 'layout', template);
 
     this._super(...arguments);
-
   },
   /*!!!!!!!!!!!DO NOT CHANGE END!!!!!!!!!!!*/
 
@@ -47,10 +47,11 @@ export default Ember.Component.extend(NodeDriver, {
       user: '',
       passwd: '',
       isAuthenticated: false,
-      zone: 'de-fra1',
-      coreNumber: 1,
-      memoryAmount: 4,
+      zone: 'au-syd1',
+      coreNumber: 0,
+      memoryAmount: 0,
       storageSize: 25,
+      useCustomConfig: false,
       usePrivateNetworkOnly: false,
     });
 
@@ -83,8 +84,6 @@ export default Ember.Component.extend(NodeDriver, {
         errors.push('Memory Size must be at least 1 GB');
       } else if (memoryAmount > 128) {
         errors.push('CPU count has to be smaller or equal than 128GB');
-      } else {
-        set(this, 'config.memoryAmount', memoryAmount * 1024);
       }
 
       const storageSize = parseInt(get(this, 'config.storageSize'), defaultRadix);
@@ -94,6 +93,11 @@ export default Ember.Component.extend(NodeDriver, {
         errors.push('Storage size has to smaller or equal than 2048GB');
       }
     } else {
+      // If using a custom config, the storage size has to be manually set to the one from the plan
+      const plans = get(this, 'plans');
+      const plan = plans.find(plan => plan.value === get(this, 'config.plan'));
+      set(this, 'config.plan', get(plan, 'value'));
+      set(this, 'config.storageSize', get(plan, 'storage_size'));
       set(this, 'config.coreNumber', 0);
       set(this, 'config.memoryAmount', 0);
     }
@@ -117,90 +121,147 @@ export default Ember.Component.extend(NodeDriver, {
     }
   },
 
+  customConfigObserver: observe('config.useCustomConfig', function () {
+    const useCustomConfig = get(this, 'config.useCustomConfig');
+    if (!useCustomConfig) {
+      set(this, 'config.coreNumber', 0);
+      set(this, 'config.memoryAmount', 0);
+    } else {
+      set(this, 'config.coreNumber', 1);
+      set(this, 'config.memoryAmount', 4);
+      set(this, 'config.plan', 25);
+    }
+  }),
+
   actions: {
     authenticate() {
-      this.dummyAPIRequest('/1.2/account')
-      .then(() => {
-        this.set('isAuthenticated', true);
-        this.set('gettingData', true);
-        return Promise.all([this.getPlans(), this.getZones()]);
-      })
-      .then(([plans, zones]) => {
-        this.set('plans', plans);
-        this.set('zones', zones);
-        this.set('gettingData', false);
-      })
-      .catch(({error}) => {
-        if (error.error_code === 'AUTHENTICATION_REQUIRED') {
-          const errorMessage = `${error.error_code}: ${error.error_message}`;
-          this.set('errors', [errorMessage]);
-        }
-      });
+      this.dummyAPIRequest('/1.3/account')
+        .then(() => {
+          this.set('isAuthenticated', true);
+          this.set('gettingData', true);
+          return Promise.all([this.getPlans(), this.getZones()]);
+        })
+        .then(([plans, zones]) => {
+          this.set('plans', plans);
+          this.set('zones', zones);
+          this.set('gettingData', false);
+        })
+        // FIXME: the catch is unnecessary until we start calling the real API
+        // .catch(({error}) => {
+        //   if (error.error_code === 'AUTHENTICATION_REQUIRED') {
+        //     const errorMessage = `${error.error_code}: ${error.error_message}`;
+        //     this.set('errors', [errorMessage]);
+        //   }
+        // });
     },
   },
   getPlans() {
     // TODO: Wait from UpCloud to fix the pre-flight authorization gate
-    // this.apiRequest('/1.2/plan');
-    return this.dummyAPIRequest('/1.2/plan')
-    .then(({plans: {plan: plans}}) => plans.map(plan => ({
-      name: `${plan.name} - Storage: ${plan.storage_size}GB`,
-      value: plan.name,
-    })));
+    // this.apiRequest('/1.3/plan');
+    return this.dummyAPIRequest('/1.3/plan')
+      .then(({plans: {plan: plans}}) => plans.map(x=> {
+        const value = x.name;
+        const rename = `${x.name} - Storage: ${x.storage_size}GB`;
+        return {
+          ...x,
+          value,
+          name: rename,
+        }
+      }));
   },
   getZones() {
     // TODO: Wait from UpCloud to fix the pre-flight authorization gate
-    // this.apiRequest('/1.2/zone');
-    return this.dummyAPIRequest('/1.2/zone')
-    .then(({zones: {zone: zones}}) => zones.map(zone => ({
-      id: zone.id,
-      name: zone.description.replace(/ #\d+/, ''),
-      flag: zone.id.substring(0, 2)
-    })));
+    // this.apiRequest('/1.3/zone');
+    return this.dummyAPIRequest('/1.3/zone')
+      .then(({zones: {zone: zones}}) => zones.map(zone => {
+        let flag = zone.id.substring(0, 2);
+
+        // FIXME: hopefully this will be fixed on UpCloud side and this check
+        //  can be removed
+        // Polish flag has some extra stuff on the end
+        if (flag === 'pl') {
+          flag = 'pl-35a4a4cee';
+        }
+
+        return {
+          id: zone.id,
+          name: zone.description.replace(/ #\d+/, ''),
+          flag,
+        };
+      }));
   },
   dummyAPIRequest(endpoint) {
     let response = {};
     switch (endpoint) {
-      case '/1.2/zone':
+      case '/1.3/zone':
         response = {
           "zones": {
             "zone": [
               {
+                "description": "Sydney #1",
+                "id": "au-syd1",
+                "public": "yes"
+              },
+              {
                 "description": "Frankfurt #1",
-                "id": "de-fra1"
+                "id": "de-fra1",
+                "public": "yes"
+              },
+              {
+                "description": "Madrid #1",
+                "id": "es-mad1",
+                "public": "yes"
               },
               {
                 "description": "Helsinki #1",
-                "id": "fi-hel1"
+                "id": "fi-hel1",
+                "public": "yes"
               },
               {
                 "description": "Helsinki #2",
-                "id": "fi-hel2"
+                "id": "fi-hel2",
+                "public": "yes"
               },
               {
                 "description": "Amsterdam #1",
-                "id": "nl-ams1"
+                "id": "nl-ams1",
+                "public": "yes"
+              },
+              {
+                "description": "Warsaw #1",
+                "id": "pl-waw1",
+                "public": "yes"
               },
               {
                 "description": "Singapore #1",
-                "id": "sg-sin1"
+                "id": "sg-sin1",
+                "public": "yes"
               },
               {
                 "description": "London #1",
-                "id": "uk-lon1"
+                "id": "uk-lon1",
+                "public": "yes"
               },
               {
                 "description": "Chicago #1",
-                "id": "us-chi1"
+                "id": "us-chi1",
+                "public": "yes"
+              },
+              {
+                "description": "New York #1",
+                "id": "us-nyc1",
+                "public": "yes"
               },
               {
                 "description": "San Jose #1",
-                "id": "us-sjo1"
+                "id": "us-sjo1",
+                "public": "yes"
               }
             ]
           }
         };
         break;
-      case '/1.2/plan':
+      case '/1.3/plan':
         response = {
           "plans": {
             "plan": [
@@ -288,7 +349,7 @@ export default Ember.Component.extend(NodeDriver, {
           }
         };
         break;
-      case '/1.2/account':
+      case '/1.3/account':
         response = {
           "account": {
             "credits": 9999.9999,
