@@ -18,3 +18,4 @@ testem.log
 .DS_Store
 .tern-port
 .idea
+.tool-versions
