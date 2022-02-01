@@ -127,22 +127,24 @@
         {{/accordion-list-item}}
         {{#accordion-list-item
           title="Advanced configurations"
-          detail="Advanced setup for networking"
+          detail="Advanced setup for the instance"
           expand=(action expandFn)
           expandOnInit=false
         }}
-          <div clas="row">
-            <label>
-              <input type="checkbox"
-                     checked={{model.upcloudConfig.usePrivateNetworkOnly}}
-                     value={{usePrivateNetworkOnly}}
-                     onchange={{action (mut model.upcloudConfig.usePrivateNetworkOnly) value='target.checked'}}>
-              Use private network only.<br>
-            </label>
-            <p class="help-block">
-              UpCloud will assign a public IP by default unless told otherwise.<br>
-              (Recommended for nodes that should not be exposed to the internet).
-            </p>
+          <div class="row">
+            <div class="col span-12 form-control">
+              <label>
+                <input type="checkbox"
+                       checked={{config.usePrivateNetworkOnly}}
+                       value={{usePrivateNetworkOnly}}
+                       onchange={{action (mut config.usePrivateNetworkOnly) value='target.checked'}}>
+                Use private network only.<br>
+              </label>
+              <p class="help-block">
+                UpCloud will assign a public IP by default unless told otherwise.<br>
+                (Recommended for nodes that should not be exposed to the internet).
+              </p>
+            </div>
           </div>
         {{/accordion-list-item}}
       {{/accordion-list}}
@@ -171,5 +173,5 @@
   {{top-errors errors=errors}}
 
   {{!-- This component shows the Create and Cancel buttons --}}
-  {{save-cancel save="save" cancel="cancel"}}
+  {{save-cancel save=(action "save") cancel=(action "cancel")}}
 </section>
