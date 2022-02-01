@@ -106,6 +106,26 @@
           </div>
         {{/accordion-list-item}}
         {{#accordion-list-item
+          title="Operating system selection"
+          detail="Select the operating system you want your nodes to run"
+          expand=(action expandFn)
+          expandOnInit=true
+        }}
+          <div class="row">
+            <h4>Operating Systems</h4>
+            <div class="row">
+              <select class="col span-6 form-control" onchange={{action (mut config.template)
+                                                                        value="target.value" }}>
+                {{#each storageTemplates as |template|}}
+                  <option value={{template.uuid}} selected={{eq config.template template.uuid}}>
+                    {{template.title}}
+                  </option>
+                {{/each}}
+              </select>
+            </div>
+          </div>
+        {{/accordion-list-item}}
+        {{#accordion-list-item
           title="Advanced configurations"
           detail="Advanced setup for networking"
           expand=(action expandFn)
