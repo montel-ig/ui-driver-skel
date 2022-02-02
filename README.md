@@ -10,27 +10,31 @@ This driver is meant to be used with the [docker-machine-driver-upcloud](https:/
 
 On your Rancher cluster, go to `https://your-cluster.com/n/drivers/node`, and select `Add Node Driver`.
 
-| Driver | Link                                                                    |
-| ------ |-------------------------------------------------------------------------|
+| Driver | Link                                                                                                      |
+| ------ |-----------------------------------------------------------------------------------------------------------|
 | Download URL | `https://upcloud-rancher-driver.s3.eu-north-1.amazonaws.com/machine/v1.2.1/docker-machine-driver-upcloud` |
-| Custom UI URL | `https://upcloud-rancher-driver.s3.eu-north-1.amazonaws.com/ui/v1.1.0/component.js` |
-| Whitelist Domains | `upcloud-rancher-driver.s3.eu-north-1.amazonaws.com`                                                                    |
+| Custom UI URL | `https://upcloud-rancher-driver.s3.eu-north-1.amazonaws.com/ui/v1.2.0/component.js`                       |
+| Whitelist Domains | `upcloud-rancher-driver.s3.eu-north-1.amazonaws.com`                                                      |
+
 
 Press `Create` and wait for the Rancher node to download the `docker-machine` driver. Once that's done, you should see the driver status as `Active`. Then you're good to go.
 
 ### Create a cluster
 On the Global cluster page, click `Add Cluster` and Select `UpCloud`
-![image](https://user-images.githubusercontent.com/15201480/56722940-b0a29380-6750-11e9-9aae-04dd7b762764.png)
+![image](./docs/cluster-type.png)
 
 Under the `Node Pools` section, create a new node template. This will prompt you to authenticate your UpCloud user. Neither we nor Rancher store any of this information, this is used only for the interactions with the API.
 
-![image](https://user-images.githubusercontent.com/15201480/56723395-8c938200-6751-11e9-96bc-ce33534e7efe.png)
+![image](./docs/upcloud-login.png)
 
 After you authenticate yourself, select the configuration for the instance. It can be either a predefined plan or a custom configuration.
 
-![image](https://user-images.githubusercontent.com/15201480/56723490-b9e03000-6751-11e9-8bc7-39a0c2d0719b.png)
+![image](./docs/all-options.png)
 
-Then, proceed to select the region for the nodes to run in. The default region is `FRA-1`. Once you're done with this, specify a name for the node template and you're good to go! :raised_hands:
+Then, proceed to select the region for the nodes to run in.
+You can also select a custom operating system (note: the operating system you choose might not be supported by Docker Machine to run or it might require extra setup that is not handled by Rancher).
+
+Once you're done with this, specify a name for the node template and you're good to go! :raised_hands:
 
 
 ## Development
