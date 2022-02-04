@@ -13,7 +13,7 @@ On your Rancher cluster, go to `https://your-cluster.com/n/drivers/node`, and se
 | Driver | Link                                                                                                      |
 | ------ |-----------------------------------------------------------------------------------------------------------|
 | Download URL | `https://upcloud-rancher-driver.s3.eu-north-1.amazonaws.com/machine/v1.2.1/docker-machine-driver-upcloud` |
-| Custom UI URL | `https://upcloud-rancher-driver.s3.eu-north-1.amazonaws.com/ui/v1.2.0/component.js`                       |
+| Custom UI URL | `https://upcloud-rancher-driver.s3.eu-north-1.amazonaws.com/ui/v1.2.1/component.js`                       |
 | Whitelist Domains | `upcloud-rancher-driver.s3.eu-north-1.amazonaws.com`                                                      |
 
 
